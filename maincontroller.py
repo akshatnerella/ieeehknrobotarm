@@ -13,7 +13,7 @@ def main():
     global pin9 #pin_elbow 
     global pin8 #pin_base
     
-    board=pyfirmata.Arduino('COM5')
+    board=pyfirmata.Arduino('COM7') #update each time connected to pc
     iter8 = pyfirmata.util.Iterator(board)
     iter8.start()
 
