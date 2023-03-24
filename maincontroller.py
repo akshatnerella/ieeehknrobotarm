@@ -43,9 +43,13 @@ j = pygame.joystick.Joystick(0) #added name to joystick
 pygame.init()
 clock = pygame.time.Clock()
 
+
 #control loop
+a = 0
+#fine tune these:
+joy_offset = 0.1
+joy_increment = 10
 while True:
-    a = 0
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             break
@@ -55,13 +59,15 @@ while True:
                 print(event)
         if event.type == pygame.JOYAXISMOTION:
         #get_axis(0) is LR, get_axis(1) is UD
-            if j.get_axis(0) >= 0.5: #right
+            if j.get_axis(0) >= joy_offset: #right
                 print(event)
+                print(a)
                 if a < 256:
-                    a +=1
+                    a +=joy_increment
                 rotate_base(a)
-            if j.get_axis(0) <= -0.5: #left
+            if j.get_axis(0) <= -joy_offset: #left
                 print(event)
+                print(a)
                 if a > 0:
-                    a -= 1
+                    a -= joy_increment
                 rotate_base(a)
