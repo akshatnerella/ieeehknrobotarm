@@ -9,17 +9,18 @@ def rotate_elbow(angle):
     pin8.write(angle)
 
 def main():
-    global pin9
-    global pin8
+    #declaring all the pins
+    global pin9 #pin_elbow 
+    global pin8 #pin_base
     
     board=pyfirmata.Arduino('COM5')
-
     iter8 = pyfirmata.util.Iterator(board)
     iter8.start()
 
+    #pin assignment
     pin9 = board.get_pin('d:9:s')
     pin8 = board.get_pin('d:8:s')
-    
+
     root = Tk()
     root.geometry("1000x1000")
     root.title("IEEE-HKN Robot Arm Controller")
