@@ -1,7 +1,11 @@
 import pyfirmata #to interface w the arduino
 from tkinter import * #gui stuff
-import pygame
+import pygame #controller interfacing
 
+#Important Variables
+COM = 'COM7' #Update each time Arduino is connected
+
+#Functions to control each servo
 def rotate_base(angle):
     pin9.write(angle)
 
@@ -9,31 +13,20 @@ def rotate_base(angle):
 def rotate_elbow(angle):
     pin8.write(angle)
 
-#declaring all the pins
-global pin9 #pin_elbow 
+
+#Declaring all the pins
+global pin9 #pin_elbow1 
 global pin8 #pin_base
-    
-board=pyfirmata.Arduino('COM7') #update each time connected to pc
+
+
+board=pyfirmata.Arduino(COM)
 iter8 = pyfirmata.util.Iterator(board)
 iter8.start()
+
 
 #pin assignment
 pin9 = board.get_pin('d:9:s')
 pin8 = board.get_pin('d:8:s')
-
-    # root = Tk()
-    # root.geometry("1000x1000")
-    # root.title("IEEE-HKN Robot Arm Controller")
-
-    # base_motor = Scale(root, command = rotate_base, to = 175, 
-    #               orient = HORIZONTAL, length = 400, label = 'Base')
-    # base_motor.pack(anchor = CENTER)
-
-    # elbow_motor = Scale(root, command = rotate_elbow, to = 175, 
-    #               orient = HORIZONTAL, length = 400, label = 'Elbow')
-    # elbow_motor.pack(anchor = CENTER)
-
-    # root.mainloop()
 
 
 #Joystick part
@@ -43,8 +36,7 @@ j = pygame.joystick.Joystick(0) #added name to joystick
 pygame.init()
 clock = pygame.time.Clock()
 
-
-#control loop
+#Control loop
 a = 0
 #fine tune these:
 joy_offset = 0.1
@@ -71,3 +63,20 @@ while True:
                 if a > 0:
                     a -= joy_increment
                 rotate_base(a)
+
+
+#Using Tkinter and PC
+    # root = Tk()
+    # root.geometry("1000x1000")
+    # root.title("IEEE-HKN Robot Arm Controller")
+
+    # base_motor = Scale(root, command = rotate_base, to = 175, 
+    #               orient = HORIZONTAL, length = 400, label = 'Base')
+    # base_motor.pack(anchor = CENTER)
+
+    # elbow_motor = Scale(root, command = rotate_elbow, to = 175, 
+    #               orient = HORIZONTAL, length = 400, label = 'Elbow')
+    # elbow_motor.pack(anchor = CENTER)
+
+    # root.mainloop()
+
