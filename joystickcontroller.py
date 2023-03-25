@@ -20,7 +20,8 @@ def main():
 
     # pin9 = board.get_pin('d:9:s')
     # pin8 = board.get_pin('d:8:s')
-    
+
+    pygame.init()
     pygame.joystick.init()
     joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
     clock = pygame.time.Clock()
@@ -30,20 +31,20 @@ def main():
 
     # print(len(joysticks))
     # exit(0)
-    joysticks[0].rumble(1, 1, 2000)
 
     while True:
-        clock.tick(10)
-        for joystick in joysticks:
-            print('ID:', joystick.get_instance_id(), end='  ')
-            print('GUID:', joystick.get_guid(), end='  ')
-            print('Power Level:', joystick.get_power_level(), end='  ')
-            print('Axis:', joystick.get_numaxes(), end='  ')
-            for axis in range(joystick.get_numaxes()):
-                print('Axis ', axis, ': ', joystick.get_axis(axis), end='  ', sep='')
-            for i in range(joystick.get_numbuttons()):
-                print(joystick.get_button(i), end=' ')
-            print()
+        clock.tick(100)
+        for event in pygame.event.get():
+            for joystick in joysticks:
+                print('ID:', joystick.get_instance_id(), end='  ')
+                print('GUID:', joystick.get_guid(), end='  ')
+                print('Power Level:', joystick.get_power_level(), end='  ')
+                print('Axis:', joystick.get_numaxes(), end='  ')
+                for axis in range(joystick.get_numaxes()):
+                    print('Axis ', axis, ': ', joystick.get_axis(axis), end='  ', sep='')
+                for i in range(joystick.get_numbuttons()):
+                    print(joystick.get_button(i), end=' ')
+                print()
 
     pygame.joystick.quit()
 
