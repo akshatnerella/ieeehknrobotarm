@@ -7,16 +7,21 @@ import pygame #controller interfacing
 COM = 'COM5' #Update each time Arduino is connected
 
 #Declaring all the pins
-global pin9 #pin_elbow1 
-global pin8 #pin_base
+#Base
+global pin_base 
+#Arm hinge
+global pin_elbowR  
+global pin_elbowL
+#Hand
 
 board=pyfirmata.Arduino(COM)
 iter8 = pyfirmata.util.Iterator(board)
 iter8.start()
 
 #pin assignment
-pin9 = board.get_pin('d:9:s')
-pin8 = board.get_pin('d:8:s')
+pin_base   = board.get_pin('d:7:s')
+pin_elbowR = board.get_pin('d:8:s')
+pin_elbowL = board.get_pin('d:9:s')
 
 #Joystick part
 pygame.joystick.init()
@@ -33,12 +38,13 @@ def map_range(value, from_min, from_max, to_min, to_max):
 def rotate_base(angle):
     # Map joystick input to servo angle range
     mapped_angle = int(map_range(angle, -1, 1, 0, 180))
-    pin9.write(mapped_angle)
+    pin_base.write(mapped_angle)
 
 def rotate_elbow(angle):
     # Map joystick input to servo angle range
     mapped_angle = int(map_range(angle, -1, 1, 0, 180))
-    pin8.write(mapped_angle)
+    pin_elbowR.write(mapped_angle)
+    pin_elbowL.write(180 - mapped_angle)
 
 ##############MAIN##################
 while True:
