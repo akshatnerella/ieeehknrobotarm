@@ -2,9 +2,10 @@ import pyfirmata #to interface w the arduino
 from tkinter import * #gui stuff
 import pygame #controller interfacing
 import time
+
 ###########SETUP################
 #Important Variables
-COM = 'COM5' #Update each time Arduino is connected
+COM = 'COM3' #Update each time Arduino is connected
 
 #Declaring all the pins
 #Base
@@ -34,14 +35,19 @@ pin_middle  = board.get_pin('d:5:s')
 pin_ring    = board.get_pin('d:6:s')
 pin_pinky   = board.get_pin('d:7:s')
 #Arm
-pin_elbowR = board.get_pin('d:8:s')
-pin_elbowL = board.get_pin('d:9:s')
+pin_elbowR = board.get_pin('d:9:s')
+pin_elbowL = board.get_pin('d:8:s')
 #Base
-pin_base   = board.get_pin('d:10:s')
+pin_base_step  = board.get_pin('d:10:o')
+pin_base_dir   = board.get_pin('d:11:o')
+pin_base_sleep = board.get_pin('d:12:o')
+
 
 # Move servos to starting position
 pin_elbowR.write(90)
 pin_elbowL.write(90)
+
+pin_base_sleep.write(1)
 
 #Joystick setup
 pygame.joystick.init()
@@ -56,9 +62,20 @@ def map_range(value, from_min, from_max, to_min, to_max):
     return (value - from_min) * (to_max - to_min) / (from_max - from_min) + to_min
 
 def rotate_base(angle):
-    # Map joystick input to servo angle range
-    mapped_angle = int(map_range(angle, -1, 1, 0, 180))
-    pin_base.write(mapped_angle)
+    if angle < 0:
+        pin_base_dir.write(0)
+        for i in range(5):
+            pin_base_step.write(1)
+            time.sleep(0.005)
+            pin_base_step.write(0)
+            time.sleep(0.005)
+    if angle > 0:
+        pin_base_dir.write(1)
+        for i in range(5):
+            pin_base_step.write(1)
+            time.sleep(0.005)
+            pin_base_step.write(0)
+            time.sleep(0.005)
 
 def rotate_elbow(angle):
     # Map joystick input to servo angle range
@@ -87,6 +104,7 @@ def release():
 
 def testfunc():
     print("Success!")
+
 ############## MAIN ##################
 while True:
     for event in pygame.event.get():
@@ -95,21 +113,21 @@ while True:
             pygame.quit()
             Sys.exit()
         #Buttons and Functions
-        if j.get_button(1): #A
-            testfunc()
+        if j.get_button(0): #A
+            hold()
+        if j.get_button(1): #B
+            release()
         
-
     # Get the current joystick position
     x_axis = j.get_axis(0)
     y_axis = j.get_axis(1)
 
-    # Control the base servo with the left joystick
-    rotate_base(x_axis)
-
     # Control the elbow servo with the right joystick
     rotate_elbow(y_axis)
 
-    # Wait for a short time to avoid overwhelming the Arduino board
+    #Base Stepper
+    rotate_base(x_axis)
+    # Wait for a short time to avoid overload
     pygame.time.wait(10)
 
 ########## MISC ############
